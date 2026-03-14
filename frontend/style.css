@@ -25,6 +25,11 @@ button {
     color: white;
     border: none;
     cursor: pointer;
+    margin-left: 10px;
+}
+
+li button {
+    background: red;
 }
 
 ul {
