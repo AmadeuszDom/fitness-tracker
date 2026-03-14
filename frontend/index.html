@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fitness Tracker</title>
     <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     
@@ -12,7 +13,11 @@
         <h1>Fitness Tracker</h1>
     </header>
 
-    <section class="workout-form">
+    <div class="container">
+
+    <section class="form-section">
+        <h2>Add Workout</h2>
+
         <form id="workoutForm">
             <input type="text" id="exercise" placeholder="Exercise (Bench Press)" required>
             <input type="number" id="weight" placeholder="Weight (kg)" required>
@@ -21,11 +26,29 @@
         </form>
     </section>
 
-    <section class="workouts">
+    <section class="history-section">
         <h2>Workout History</h2>
-        <ul id="workoutList"></ul>
+        
+        <table id="workoutTable">
+            <thead>
+                <tr>
+                    <th>Exercise</th>
+                    <th>Weight (kg)</th>
+                    <th>Reps</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="workoutTable">
+            </tbody>
+        </table>
     </section>
 
+    <section class="stats-section">
+        <h2>Progress</h2>
+
+        <canvas id="progressChart"></canvas>
+    </section>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
