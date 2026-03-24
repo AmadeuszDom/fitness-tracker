@@ -31,6 +31,14 @@ color:white;
 cursor:pointer;
 }
 
+#save-workout{
+    margin-top: 10px;
+}
+
+#save-workout-hidden{
+    visibility: hidden;
+}
+
 table{
 width:100%;
 border-collapse:collapse;

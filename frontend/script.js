@@ -1,6 +1,6 @@
 const form = document.getElementById("workoutForm")
 const table = document.getElementById("workoutTable")
-
+var saveWorkout = document.getElementById("save-workout-hidden");
 let workouts = JSON.parse(localStorage.getItem("workouts")) || []
 
 function saveWorkouts(){
@@ -8,6 +8,11 @@ localStorage.setItem("workouts", JSON.stringify(workouts))
 }
 
 function renderWorkouts(){
+console.log(localStorage.getItem("workouts"));
+
+
+if (localStorage.getItem("workouts").length > 2) saveWorkout.id = "save-workout";
+
 
 table.innerHTML=""
 
