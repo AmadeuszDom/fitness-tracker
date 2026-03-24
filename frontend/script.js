@@ -1,6 +1,6 @@
 const form = document.getElementById("workoutForm")
 const table = document.getElementById("workoutTable")
-var saveWorkout = document.getElementById("save-workout-hidden");
+const saveWorkout = document.getElementById("save-workout-hidden");
 let workouts = JSON.parse(localStorage.getItem("workouts")) || []
 
 function saveWorkouts(){
@@ -31,6 +31,11 @@ table.appendChild(row)
 
 })
 
+saveWorkout.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("workout-details").id = "workout-details-active";
+})
+
 updateChart()
 
 }
@@ -42,6 +47,8 @@ workouts.splice(index,1)
 saveWorkouts()
 
 renderWorkouts()
+
+if (localStorage.getItem("workouts").length <= 2) saveWorkout.id = "save-workout-hidden";
 
 }
 

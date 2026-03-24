@@ -1,6 +1,6 @@
 body{
 font-family:Arial;
-background:#0f0f0f;
+background:#1d1d1d;
 color:white;
 margin:0;
 }
@@ -52,4 +52,95 @@ border-bottom:1px solid #333;
 
 .stats-section{
 grid-column:1 / span 2;
+}
+#workout-details{
+    position: fixed;           /* Makes it float on top of everything */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 460px;
+    background: white;
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    z-index: 1000;             /* On top of everything */
+    display: none;
+}
+#workout-details-active{
+    display: block;
+}
+
+#workout-details-active::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);   /* Dark semi-transparent overlay */
+    z-index: -1;
+}
+
+#workout-details h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+#workout-details form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+#workout-details label {
+    font-weight: 600;
+    color: #444;
+}
+
+#workout-details input {
+    padding: 12px 14px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border 0.3s;
+}
+
+#workout-details input:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.form-buttons button {
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#cancel-save {
+    background: #e0e0e0;
+    color: #333;
+}
+
+#cancel-save:hover {
+    background: #ccc;
+}
+
+#workout-details button[type="submit"] {
+    background: #4CAF50;
+    color: white;
+}
+
+#workout-details button[type="submit"]:hover {
+    background: #45a049;
 }

@@ -43,7 +43,25 @@
         </table>
         <button id="save-workout-hidden">Save workout</button>
     </section>
+    <section id="workout-details">
+        <h2>Save Workout</h2>
+            <form id="workoutDetailsForm">
+                <label for="workoutName">Workout Name:</label>
+                <input type="text" id="workoutName" placeholder="e.g. Push Day, Chest & Triceps" required>
 
+                <label for="workoutRating">Rate this workout (1-10):</label>
+                <input type="number" id="workoutRating" min="1" max="10" value="8" required>
+
+                <div class="form-buttons">
+                    <button type="button" id="cancel-save">Cancel</button>
+                    <button type="submit">Save Workout</button>
+                </div>
+            </form>
+    </section>
+
+    <section class="workouts-hidden">
+
+    </section>
     <section class="stats-section">
         <h2>Progress</h2>
 
