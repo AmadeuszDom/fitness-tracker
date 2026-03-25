@@ -1,98 +1,111 @@
 const form = document.getElementById("workoutForm")
 const table = document.getElementById("workoutTable")
 const saveWorkout = document.getElementById("save-workout-hidden");
-let workouts = JSON.parse(localStorage.getItem("workouts")) || []
+const cancelButton = document.getElementById("cancel-save");
+let exercises = JSON.parse(localStorage.getItem("exercises")) || []
+let chart;
 
-function saveWorkouts(){
-localStorage.setItem("workouts", JSON.stringify(workouts))
+function saveExercise(){
+localStorage.setItem("exercises", JSON.stringify(exercises))
 }
 
-function renderWorkouts(){
-console.log(localStorage.getItem("workouts"));
+function renderExercises(){
 
+    if (!exercises[0]) saveWorkout.id = "save-workout-hidden";
+    else saveWorkout.id = "save-workout";
+    
 
-if (localStorage.getItem("workouts").length > 2) saveWorkout.id = "save-workout";
+    table.innerHTML=""
 
+    exercises.forEach((exercise,index)=>{
 
-table.innerHTML=""
+        const row = document.createElement("tr")
 
-workouts.forEach((workout,index)=>{
+        row.innerHTML=`
+        <td>${exercise.exercise}</td>
+        <td>${exercise.weight}KG</td>
+        <td>${exercise.reps}</td>
+        <td><button onclick="deleteExercise(${index})">Delete</button></td>
+        `
 
-const row = document.createElement("tr")
+        table.appendChild(row)
 
-row.innerHTML=`
-<td>${workout.exercise}</td>
-<td>${workout.weight}</td>
-<td>${workout.reps}</td>
-<td><button onclick="deleteWorkout(${index})">Delete</button></td>
-`
+    })
 
-table.appendChild(row)
+    saveWorkout.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.getElementById("workout-details").id = "workout-details-active";
+    })
 
-})
+    cancelButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        document.getElementById("workout-details-active").id = "workout-details";
+        document.getElementById("workoutName").value = "";
+        document.getElementById("workoutRating").value = -1;
+    });
 
-saveWorkout.addEventListener("click", (e) => {
-    e.preventDefault();
-    document.getElementById("workout-details").id = "workout-details-active";
-})
-
-updateChart()
+    updateChart()
 
 }
 
-function deleteWorkout(index){
+function deleteExercise(index){
 
-workouts.splice(index,1)
+    exercises.splice(index,1)
 
-saveWorkouts()
+    saveExercise()
 
-renderWorkouts()
-
-if (localStorage.getItem("workouts").length <= 2) saveWorkout.id = "save-workout-hidden";
+    renderExercises()
 
 }
 
 form.addEventListener("submit",function(e){
 
-e.preventDefault()
+    e.preventDefault()
 
-const exercise=document.getElementById("exercise").value
-const weight=document.getElementById("weight").value
-const reps=document.getElementById("reps").value
+    const exercise=document.getElementById("exercise").value
+    const weight=document.getElementById("weight").value
+    const reps=document.getElementById("reps").value
 
-const workout={
-exercise,
-weight,
-reps
-}
+    const workout={
+    exercise,
+    weight,
+    reps
+    }
 
-workouts.push(workout)
+    exercises.push(workout)
 
-saveWorkouts()
+    saveExercise()
 
-renderWorkouts()
+    renderExercises()
 
-form.reset()
+    form.reset()
 
 })
 
-function updateChart(){
+function updateChart() {
+    const ctx = document.getElementById("progressChart").getContext("2d");
 
-const ctx=document.getElementById("progressChart")
+    const weights = exercises.map(w => w.weight);
+    const labels = weights.map((_, i) => i + 1);
 
-const weights=workouts.map(w=>w.weight)
-
-new Chart(ctx,{
-type:"line",
-data:{
-labels:weights.map((_,i)=>i+1),
-datasets:[{
-label:"Weight Progress",
-data:weights
-}]
+    if (chart) {
+        // Update existing chart
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = weights;
+        chart.update();
+    } else {
+        // Create chart only once
+        chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Weight Progress",
+                    data: weights
+                }]
+            }
+        });
+    }
 }
-})
 
-}
-
-renderWorkouts()
+renderExercises();
