@@ -4,7 +4,7 @@ A full-stack fitness tracking web application.
 
 ## Features
 
-- Log workouts
+- Log workouts (done)
 - Track progress
 - Dashboard
 - User accounts (coming soon)

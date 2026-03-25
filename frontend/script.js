@@ -1,18 +1,25 @@
-const form = document.getElementById("workoutForm")
+const exerciseform = document.getElementById("workoutForm")
 const table = document.getElementById("workoutTable")
-const saveWorkout = document.getElementById("save-workout-hidden");
+const saveWorkoutButton = document.getElementById("save-workout-hidden");
 const cancelButton = document.getElementById("cancel-save");
-let exercises = JSON.parse(localStorage.getItem("exercises")) || []
+const saveWorkoutForm = document.getElementById("workoutDetailsForm");
+const workoutSection = document.getElementById("workouts-section");
+let workouts = JSON.parse(localStorage.getItem("workouts")) || [];
+let exercises = JSON.parse(localStorage.getItem("exercises")) || [];
 let chart;
 
 function saveExercise(){
 localStorage.setItem("exercises", JSON.stringify(exercises))
 }
 
+function saveWorkout() {
+    localStorage.setItem("workouts", JSON.stringify(workouts));
+}
+
 function renderExercises(){
 
-    if (!exercises[0]) saveWorkout.id = "save-workout-hidden";
-    else saveWorkout.id = "save-workout";
+    if (!exercises[0]) saveWorkoutButton.id = "save-workout-hidden";
+    else saveWorkoutButton.id = "save-workout";
     
 
     table.innerHTML=""
@@ -23,30 +30,80 @@ function renderExercises(){
 
         row.innerHTML=`
         <td>${exercise.exercise}</td>
-        <td>${exercise.weight}KG</td>
+        <td>${exercise.weight} KG</td>
         <td>${exercise.reps}</td>
-        <td><button onclick="deleteExercise(${index})">Delete</button></td>
+        <td><button onclick="deleteExercise(${index})" style="background-color: #b94545">Delete</button></td>
         `
 
         table.appendChild(row)
 
     })
-
-    saveWorkout.addEventListener("click", (e) => {
-        e.preventDefault();
-        document.getElementById("workout-details").id = "workout-details-active";
-    })
-
-    cancelButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        document.getElementById("workout-details-active").id = "workout-details";
-        document.getElementById("workoutName").value = "";
-        document.getElementById("workoutRating").value = -1;
-    });
-
     updateChart()
 
 }
+
+saveWorkoutButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("workout-details").id = "workout-details-active";
+})
+
+cancelButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("workout-details-active").id = "workout-details";
+    saveWorkoutForm.reset();
+});
+
+exerciseform.addEventListener("submit",function(e){
+
+    e.preventDefault()
+
+    const exercise=document.getElementById("exercise").value
+    const weight=document.getElementById("weight").value
+    const reps=document.getElementById("reps").value
+
+    const workout={
+        exercise,
+        weight,
+        reps
+    }
+
+    exercises.push(workout)
+
+    saveExercise()
+
+    renderExercises()
+
+    exerciseform.reset()
+
+})
+
+saveWorkoutForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const name = document.getElementById("workoutName").value;
+    const rating = document.getElementById("workoutRating").value;
+    var numberOfExercises = 0;
+    exercises.forEach(() => numberOfExercises++); 
+
+    var totalWeight = 0;
+    exercises.forEach((w) => totalWeight+= ( parseFloat(w.weight) * parseFloat(w.reps)) );
+
+    const workout = {
+        name,
+        rating,
+        numberOfExercises,
+        totalWeight
+    }
+    workouts.push(workout);
+    saveWorkout();
+    renderWorkout();
+    document.getElementById("workout-details-active").id = "workout-details";
+    saveWorkoutForm.reset();
+
+    exercises = [];
+    localStorage.removeItem("exercises");
+    saveExercise();
+    renderExercises();
+})
 
 function deleteExercise(index){
 
@@ -58,29 +115,54 @@ function deleteExercise(index){
 
 }
 
-form.addEventListener("submit",function(e){
 
-    e.preventDefault()
+function deleteWorkout(index){
 
-    const exercise=document.getElementById("exercise").value
-    const weight=document.getElementById("weight").value
-    const reps=document.getElementById("reps").value
+    workouts.splice(index,1)
 
-    const workout={
-    exercise,
-    weight,
-    reps
-    }
+    saveWorkout()
 
-    exercises.push(workout)
+    renderWorkout()
 
-    saveExercise()
+}
 
-    renderExercises()
+function renderWorkout(){
+    workoutSection.innerHTML = "";  // Clear old cards before rendering new ones
+    workouts.forEach((workout, index) => {
+        const card = document.createElement("div");
+        card.className = "workout-card";
 
-    form.reset()
+        var ratingColor; 
 
-})
+        //Workout rating color dependent on the rating it
+        if (workout.rating < 5) ratingColor = ratingColor = "style=\"color: #3eb0e6\""
+        if (workout.rating >= 5 && workout.rating < 8) ratingColor = "style=\"color: #e27a19\""
+        if (workout.rating >= 8 && workout.rating < 10) ratingColor = "style=\"color: #e9490a\""
+        if (workout.rating == 10) ratingColor = "style=\"color: #ff0000\"";
+
+        
+        card.innerHTML = `
+            <div class="workout-header">
+                <h3 class="workout-name">${workout.name}</h3>
+                <p class="workout-rating" ${ratingColor}>${workout.rating} / 10</p>
+            </div>
+            
+            <div class="workout-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Exercises</span>
+                    <span class="stat-value" >${workout.numberOfExercises}</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total Weight</span>
+                    <span class="stat-value">${workout.totalWeight} kg</span>
+                </div>
+            </div>
+
+            <button class="delete-btn" onclick="deleteWorkout(${index})">Delete Workout</button>
+        `
+        workoutSection.append(card);
+    })
+}
 
 function updateChart() {
     const ctx = document.getElementById("progressChart").getContext("2d");
@@ -108,4 +190,36 @@ function updateChart() {
     }
 }
 
+// Drag-to-scroll functionality for workout cards
+const workoutsContainer = document.querySelector('.workouts-section');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+workoutsContainer.addEventListener('mousedown', (e) => {
+    isDown = true;
+    startX = e.pageX - workoutsContainer.offsetLeft;
+    scrollLeft = workoutsContainer.scrollLeft;
+    workoutsContainer.style.cursor = 'grabbing';
+});
+
+workoutsContainer.addEventListener('mouseleave', () => {
+    isDown = false;
+    workoutsContainer.style.cursor = 'grab';
+});
+
+workoutsContainer.addEventListener('mouseup', () => {
+    isDown = false;
+    workoutsContainer.style.cursor = 'grab';
+});
+
+workoutsContainer.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - workoutsContainer.offsetLeft;
+    const walk = (x - startX) * 1.5; // Multiplier for scroll speed
+    workoutsContainer.scrollLeft = scrollLeft - walk;
+});
+
 renderExercises();
+renderWorkout()

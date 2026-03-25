@@ -12,15 +12,15 @@ background:#000;
 }
 
 .container{
-display:grid;
-grid-template-columns:1fr 2fr;
-gap:30px;
-padding:30px;
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    gap:30px;
+    padding:30px;
 }
 
 form input{
-padding:10px;
-margin:5px;
+    padding:10px;
+    margin:5px;
 }
 
 button{
@@ -54,8 +54,22 @@ border-bottom:1px solid #333;
     grid-column:1 / span 2;
 }
 
+/*workout details not visible*/
+
 #workout-details {
     display: none;
+}
+
+body:has(#workout-details) button {
+    opacity: 1 !important;           
+    filter: grayscale(0%) !important;  
+    transition: opacity 0.3s ease;
+}
+
+body:has(#workout-details) p {
+    opacity: 1 !important;           
+    filter: grayscale(0%) !important;  
+    transition: opacity 0.3s ease;
 }
 
 #workout-details-active {
@@ -98,6 +112,12 @@ body:has(#workout-details-active) button {
     transition: opacity 0.3s ease;
 }
 
+body:has(#workout-details-active) p {
+    opacity: 0.35 !important;           /* very pale */
+    filter: grayscale(70%) !important;  /* desaturated look */
+    transition: opacity 0.3s ease;
+}
+
 /* Keep the buttons INSIDE the modal normal and vibrant */
 #workout-details-active form button {
     opacity: 1 !important;
@@ -135,3 +155,112 @@ body:has(#workout-details-active) button {
     color: #fff !important;
 }
 
+/* ====================== WORKOUT SUMMARY CARD ====================== */
+
+/* Container that holds all the cards - changed to horizontal layout */
+.workouts-section {
+    display: flex;
+    flex-direction: row;           /* Horizontal layout */
+    width: 100%;
+    gap: 20px;
+    padding: 20px 0;
+    overflow-x: auto;              /* Enable horizontal scrolling */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;                  /* Show draggable cursor */
+    user-select: none;             /* Prevent text selection while dragging */
+    
+    /* Optional: hide scrollbar (cleaner look) */
+    scrollbar-width: none;         /* Firefox */
+}
+
+.workouts-section::-webkit-scrollbar {
+    display: none;                 /* Chrome, Safari, Edge */
+}
+
+.workout-card {
+
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    
+    /* Important: fixed or minimum width so cards don't stretch */
+    flex: 0 0 auto;               /* Don't grow or shrink */
+    min-width: 320px;             /* Cards will have minimum width to enable scrolling */
+    width: auto;                  /* Let content determine width with min-width constraint */
+}
+
+.workout-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Rest of your styles remain the same */
+.workout-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.workout-name {
+    margin: 0;
+    font-size: 1.35rem;
+    color: white;
+    font-weight: 600;
+    flex: 1;
+}
+
+.workout-rating {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #00c853;
+    font-weight: 600;
+}
+
+.workout-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    background: #242424;
+    padding: 12px 15px;
+    border-radius: 8px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: white;
+}
+
+.delete-btn {
+    width: 100%;
+    padding: 12px;
+    background: #d32f2f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.delete-btn:hover {
+    background: #b71c1c;
+}
